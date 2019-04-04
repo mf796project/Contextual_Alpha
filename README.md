@@ -6,7 +6,9 @@ df = get_matdata('5Y_GEO_GROWTH_DILUTED_EPS')
 
 ## Available factors:
 "5Y_GEO_GROWTH_DILUTED_EPS": "Diluted EPS - 5 Yr Geometric Growth",
+
 "CASH_FLOW_TO_NET_INC": "Cash Flow to Net Income",
+
 "ACCT_RCV_TURN": "Accounts Receivable Turnover",
 "BEST_ANALYST_RATING": "BEst Analyst Rating",
 "GOODWILL_ASSETS_%": "Goodwill to Assets %",
