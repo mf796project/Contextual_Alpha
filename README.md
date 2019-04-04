@@ -1,9 +1,10 @@
 # Contextual_Alpha
 
-## Guide for loading factor data:
+## Guide for loading S&P500 constituents & factor data:
 ```
 from ult_data import get_matdata
-df = get_matdata('5Y_GEO_GROWTH_DILUTED_EPS')
+df = get_matdata('constituents') # load constituents
+df = get_matdata('5Y_GEO_GROWTH_DILUTED_EPS') # load "Diluted EPS - 5 Yr Geometric Growth"
 ```
 ## Available factors:
 ```
