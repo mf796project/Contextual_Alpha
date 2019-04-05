@@ -1,4 +1,4 @@
-from ult_data import wrds_sp500_cons_path, sp500_ticker_list_path
+from cln_ult import wrds_sp500_cons_path, sp500_ticker_list_path
 import numpy as np
 import pandas as pd
 import pandas_market_calendars as mcal

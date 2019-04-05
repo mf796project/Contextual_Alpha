@@ -1,4 +1,4 @@
-from ult_data import factor_paths
+from cln_ult import factor_paths
 import numpy as np
 import pandas as pd
 import json

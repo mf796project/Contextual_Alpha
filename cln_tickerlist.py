@@ -1,4 +1,4 @@
-from ult_data import wrds_sp500_cons_path
+from cln_ult import wrds_sp500_cons_path
 import os
 import pandas as pd
 
