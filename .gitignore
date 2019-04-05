@@ -2,8 +2,3 @@ __pycache__
 .vscode
 .DS_Store
 /rawdata
-cln*.py
-data/Raw*.csv
-data/ticker_list.*
-data/GIC*
-data/naming_dict.json
