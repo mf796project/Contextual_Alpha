@@ -20,8 +20,11 @@ for factor_path in factor_paths:
         data=raw_df.iloc[5:,1:].values, 
         index=date, 
         columns=ticker_list)
+    if file_name == 'PX_CLOSE_1D':
+        df = df.shift(-1) # price yesterday to today 
     df = df[~pd.isnull(df.index)]
     df = df.loc[:,~df.columns.duplicated()]
+    df = df.reindex(sorted(df.columns), axis=1)
     df = df.reset_index().rename(columns={'index':'Date'})
     df.to_csv('_'.join(['S&P500', file_name+'.csv']), index=False)
 

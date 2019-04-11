@@ -22,6 +22,7 @@ sp500_cons_name = 'S&P500_constituents.csv'
 sp500_cons_path = os.path.join(data_path, sp500_cons_name)
 
 factor_paths = [os.path.join(rawdata_path, i) for i in os.listdir(rawdata_path) if i.endswith('.csv')]
+mat_paths = [os.path.join(data_path, i) for i in os.listdir(data_path) if i.startswith('S&P500')]
 
 
 
