@@ -4,12 +4,14 @@
 get matrix data (T by K) T:date(pd.datetimeindex) K:tickers
 ```
 from ult_data import get_matdata
-df = get_matdata('constituents') # load constituents
-df = get_matdata('5Y_GEO_GROWTH_DILUTED_EPS') # load "Diluted EPS - 5 Yr Geometric Growth"
+df = get_matdata('index') # load SPX index price
 ```
-## Available factors:
+## Available data:
 ```
 {
+    "index": "SPX index price",
+    "clsprc": "S&P500 constituents' daily close price",
+    "constituents": "S&P500 constituents",
     "5Y_GEO_GROWTH_DILUTED_EPS": "Diluted EPS - 5 Yr Geometric Growth",
     "CASH_FLOW_TO_NET_INC": "Cash Flow to Net Income",
     "ACCT_RCV_TURN": "Accounts Receivable Turnover",
