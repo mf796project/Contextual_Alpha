@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import json
 
 raw_df = pd.read_csv('CUR_MKT_CAP.csv')
 
