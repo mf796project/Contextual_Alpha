@@ -6,6 +6,8 @@ data_path = os.path.join(path, 'data')
 
 def get_matdata(factor_name):
     df = pd.read_csv(os.path.join(data_path, '_'.join(['S&P500', factor_name+'.csv'])))
-    df['Date'] = pd.to_datetime(df['Date'])
-    df = df.set_index('Date')
-    return df
+    try:
+        df['Date'] = pd.to_datetime(df['Date'])
+        return df.set_index('Date')
+    except:
+        return df.set_index(df.columns[0])
