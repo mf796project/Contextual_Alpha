@@ -13,6 +13,7 @@ df = get_matdata('index') # load SPX index price
     "clsprc": "S&P500 constituents' daily close price",
     "constituents": "S&P500 constituents",
     "rf": "Fama French risk-free rate",
+    "gic_sector_code": "GIC Sector Code(Global Industry Classification Standard)",
     
     "CUR_MKT_CAP": "Current Market Capitalization",
     "ASSET_GROWTH": "Assets - 1 Year Growth",
