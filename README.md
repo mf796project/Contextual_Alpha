@@ -1,20 +1,27 @@
 # Contextual_Alpha
 
-## Guide for loading S&P500 constituents & factor data:
-get matrix data (T by K) T:date(pd.datetimeindex) K:tickers
+## Guide for loading Available data:
 ```
 from ult_data import get_matdata
-df = get_matdata('index') # load SPX index price
+
+df = get_matdata('ALL_CAPITALIZED_FILE') # return T by K matrix data (T:date(pd.datetimeindex) K:tickers)
+
+df = get_matdata('constituents') # return T by K logical data (T:date(pd.datetimeindex) K:tickers)
+
+df = get_matdata('rf') # return T by 1 series of fama risk-free rate(T:date(pd.datetimeindex))
+df = get_matdata('index') # return T by 1 series of S&P500 index price(T:date(pd.datetimeindex))
+
+df = get_matdata('gic_sector_code') # return K by 3 data of Gic sector code(K:tickers)
 ```
 ## Available data:
 ```
 {
     "index": "SPX index price",
-    "clsprc": "S&P500 constituents' daily close price",
     "constituents": "S&P500 constituents",
     "rf": "Fama French risk-free rate",
     "gic_sector_code": "GIC Sector Code(Global Industry Classification Standard)",
     
+    "CLSPRC": "S&P500 constituents' daily close price",
     "CUR_MKT_CAP": "Current Market Capitalization",
     "ASSET_GROWTH": "Assets - 1 Year Growth",
     "5Y_GEO_GROWTH_DILUTED_EPS": "Diluted EPS - 5 Yr Geometric Growth",
