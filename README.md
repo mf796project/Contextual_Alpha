@@ -1,6 +1,6 @@
 # Contextual_Alpha
 
-## Guide for loading S&P500 constituents & factor data:
+## Guide for loading Available data(T by K Matrix):
 get matrix data (T by K) T:date(pd.datetimeindex) K:tickers
 ```
 from ult_data import get_matdata
