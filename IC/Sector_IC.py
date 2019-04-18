@@ -13,6 +13,7 @@ from IC_WholeUniverse import *
 import pandas as pd
 import scipy.stats as st
 
+rets=excess
 cate=pd.read_csv("4LargeSectors.csv")
 tic=pd.read_csv("S&P500_gic_sector_code.csv")# contains campanies and its industry
 tic["Gind"]=tic["Gind"]//100 # first four digit of industry code
@@ -27,9 +28,8 @@ co=constit.columns&crets.columns
 new_con=constit[co]
 crets=crets[co]
 """
-factor=[eps,sps,prof_mar,lgro,roic,ninc,gmar,cfo,cf,sg,mom,cfni,art,ar,goodwill,leve,tar,rc,inv_turn,spread,quick,a_turn,fpe,fpb,pe,pb]
-fnames=['eps','sps','prof_mar','lgro','roic','ninc','gmar','cfo','cf','sg','mom','cfni','art','ar','goodwill','leve','tar','rc','inv_turn','spread','quick','a_turn','fpe','fpb','pe','pb']
-
+factor=reserved
+fnames=rnames
 
 
 def Sector_IC (constit,rets,factor,fnames,ind,IC_Whole,alpha):
@@ -42,7 +42,7 @@ def Sector_IC (constit,rets,factor,fnames,ind,IC_Whole,alpha):
     crets=crets[co]
     
     IC=pd.DataFrame(index=factor[0].index)
-    tstat=pd.DataFrame(index=["tstat","significance"])
+    tstat=pd.DataFrame(index=["p","significance"])
     
     
     for i in range(len(factor)):

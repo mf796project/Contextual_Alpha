@@ -11,10 +11,11 @@ Created on Fri Apr 12 13:02:36 2019
 from MF796_Proj_onesizefitall import *
 import pandas as pd
 
+rets=excess
 ######################################### factor: eps growth  whole universe
 eps=pd.read_csv("S&P500_5Y_GEO_GROWTH_DILUTED_EPS.csv")
-eps.index=pd.to_datetime(eps['Date'])   
-eps=eps.fillna(method="bfill",axis=0)
+eps.index=pd.to_datetime(eps['Date']) 
+#eps=eps.fillna(method="bfill",axis=0)
 eps=eps.asfreq("M",method="ffill")
 
 EPS=find_IC(constit,rets,eps)
@@ -22,8 +23,8 @@ EPS.columns=["EPS"]
 ######################################### factor: sales/share  whole universe
 sps=pd.read_csv("S&P500_GEO_GROW_SALES_PER_SH.csv")
 sps.index=pd.to_datetime(sps["Date"])
-sps=sps.asfreq("M",method="ffill")
 
+sps=sps.asfreq("M",method="ffill")
 SPS=find_IC(constit,rets,sps)
 SPS.columns=["SPS"]
 IC_Whole=EPS.join(SPS)
@@ -36,6 +37,7 @@ PROF_MAR=find_IC(constit,rets,prof_mar)
 PROF_MAR.columns=["PROF_MAR"]
 IC_Whole=IC_Whole.join(PROF_MAR)
 ######################################## factor: long term growth(growth)  whole universe
+"""
 lgro=pd.read_csv("S&P500_BEST_EST_LONG_TERM_GROWTH.csv")
 lgro.index=pd.to_datetime(lgro["Date"])
 lgro=lgro.asfreq("M",method="ffill")
@@ -43,6 +45,7 @@ lgro=lgro.asfreq("M",method="ffill")
 LGRO=find_IC(constit,rets,lgro)
 LGRO.columns=["LGRO"]
 IC_Whole=IC_Whole.join(LGRO)
+"""
 ######################################### factor: ROIC (growth)  whole universe
 roic=pd.read_csv("S&P500_RETURN_ON_INV_CAPITAL.csv")
 roic.index=pd.to_datetime(roic["Date"])
@@ -66,6 +69,7 @@ gmar=gmar.asfreq("M",method="ffill")
 
 GMAR=find_IC(constit,rets,gmar) 
 GMAR.columns=["GMAR"]
+IC_Whole=IC_Whole.join(GMAR)
 ######################################### factor :growth of cash from operating act(growth)
 cfo=pd.read_csv("S&P500_GEO_GROW_CASH_OPER_ACT.csv")
 cfo.index=pd.to_datetime(cfo["Date"])
@@ -149,7 +153,7 @@ IC_Whole=IC_Whole.join(ART)
 #########################################factor: Best analyst rating(quality)
 ar=pd.read_csv("S&P500_BEST_ANALYST_RATING.csv")
 ar.index=pd.to_datetime(ar["Date"])
-ar=art.asfreq("M",method="ffill")
+ar=ar.asfreq("M",method="ffill")
 
 AR=find_IC(constit,rets,ar)
 AR.columns=["AR"]
@@ -219,4 +223,30 @@ A_TURN=find_IC(constit,rets,a_turn)
 A_TURN.columns=["A_TURN"]
 IC_Whole=IC_Whole.join(A_TURN)
 
+IC_Whole.columns=[x.lower() for x in IC_Whole.columns]
 IC_Whole.to_csv("IC_WholeUniverse.csv")
+
+######################################################################drop factors with NA more than 10% of data amount
+
+factor=[eps,sps,prof_mar,roic,ninc,gmar,cfo,cf,sg,mom,cfni,art,ar,goodwill,leve,tar,rc,inv_turn,spread,quick,a_turn,fpb,pe,pb]
+fnames=['eps','sps','prof_mar','roic','ninc','gmar','cfo','cf','sg','mom','cfni','art','ar','goodwill','leve','tar','rc','inv_turn','spread','quick','a_turn','fpb','pe','pb']
+
+reserved=[]
+rnames=[]
+
+dropped=[]
+dnames=[]
+for i in range(len(factor)):
+    eff=factor[i].iloc[:,1:].dropna(axis=0,how="all")
+    if len(eff)>0.9*len(factor[i]):
+        reserved.append(factor[i])
+        rnames.append(fnames[i])
+    else:
+        dropped.append(factor[i])
+        dnames.append(fnames[i])
+        
+dropped.append(fpe)
+dnames.append("fpe")
+        
+new_IC_Whole=IC_Whole[rnames]        
+new_IC_Whole.to_csv("new_IC_Whole.csv")
