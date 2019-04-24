@@ -21,6 +21,7 @@ df = get_matdata('gic_sector_code') # return K by 3 data of Gic sector code(K:ti
     "rf": "Fama French risk-free rate",
     "gic_sector_code": "GIC Sector Code(Global Industry Classification Standard)",
     
+    "BETA_ADJ_OVERRIDABLE": "Overridable Adjusted Beta",
     "CLSPRC": "S&P500 constituents' daily close price",
     "CUR_MKT_CAP": "Current Market Capitalization",
     "ASSET_GROWTH": "Assets - 1 Year Growth",
