@@ -191,6 +191,7 @@ RC=find_IC(constit,rets,rc)
 RC.columns=["RC"]
 IC_Whole=IC_Whole.join(RC)
 ######################################### factor: Inventory Turnover(liquidity, quality)
+"""
 inv_turn=pd.read_csv("S&P500_INVENT_TURN.csv")
 inv_turn.index=pd.to_datetime(inv_turn["Date"])
 inv_turn=inv_turn.asfreq("M",method="ffill")
@@ -198,7 +199,9 @@ inv_turn=inv_turn.asfreq("M",method="ffill")
 INV_TURN=find_IC(constit,rets,inv_turn)
 INV_TURN.columns=["INV_TURN"]
 IC_Whole=IC_Whole.join(INV_TURN)
+"""
 ######################################### factor: Average Bid Ask Spread Percentage(liquidity, quality)
+"""
 spread=pd.read_csv("S&P500_AVERAGE_BID_ASK_SPREAD_%.csv")
 spread.index=pd.to_datetime(spread["Date"])
 spread=spread.asfreq("M",method="ffill")
@@ -206,6 +209,7 @@ spread=spread.asfreq("M",method="ffill")
 SPREAD=find_IC(constit,rets,spread)
 SPREAD.columns=["SPREAD"]
 IC_Whole=IC_Whole.join(SPREAD)
+"""
 ######################################### factor:Quick Ratio(liquidity, quality)
 quick=pd.read_csv("S&P500_QUICK_RATIO.csv")
 quick.index=pd.to_datetime(quick["Date"])
@@ -228,8 +232,8 @@ IC_Whole.to_csv("IC_WholeUniverse.csv")
 
 ######################################################################drop factors with NA more than 10% of data amount
 
-factor=[eps,sps,prof_mar,roic,ninc,gmar,cfo,cf,sg,mom,cfni,art,ar,goodwill,leve,tar,rc,inv_turn,spread,quick,a_turn,fpb,pe,pb]
-fnames=['eps','sps','prof_mar','roic','ninc','gmar','cfo','cf','sg','mom','cfni','art','ar','goodwill','leve','tar','rc','inv_turn','spread','quick','a_turn','fpb','pe','pb']
+factor=[eps,sps,prof_mar,roic,ninc,gmar,cfo,cf,sg,mom,cfni,art,ar,goodwill,leve,tar,rc,quick,a_turn,fpb,pe,pb]
+fnames=['eps','sps','prof_mar','roic','ninc','gmar','cfo','cf','sg','mom','cfni','art','ar','goodwill','leve','tar','rc','quick','a_turn','fpb','pe','pb']
 
 reserved=[]
 rnames=[]

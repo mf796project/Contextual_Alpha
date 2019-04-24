@@ -59,7 +59,7 @@ def find_IC_cont(constit,rets,factor,context):
         
         
         
-        if len(names) <=6:
+        if len(names) <=9:
             IC_low.append(None)
             IC_mid.append(None)
             IC_high.append(None)
@@ -103,8 +103,8 @@ import scipy.stats as st
     
 growth=pd.read_csv("S&P500_NET_INC_GROWTH.csv")
 growth.index=pd.to_datetime(growth['Date'])
-#growth=growth.fillna(method="bfill",axis=0)
-growth=growth.asfreq('M',method='ffill')
+growth=growth.fillna(method="ffill",axis=0)
+#growth=growth.asfreq('M',method='ffill')
 
 leve=pd.read_csv("S&P500_TOT_DEBT_TO_TOT_ASSET.csv")
 leve.index=pd.to_datetime(leve['Date'])
