@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-raw_df = pd.read_csv('CUR_MKT_CAP.csv')
+raw_df = pd.read_csv('PE_RATIO.csv')
 
 file_name = raw_df.iloc[4,1]
 file_mean = raw_df.iloc[3,1]
