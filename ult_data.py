@@ -14,7 +14,3 @@ def get_matdata(factor_name):
         return df.set_index('Date')
     except:
         return df.set_index(df.columns[0])
-
-def cln_invalid_security(df):
-    ''' change #N/A Invalid Security to NaN '''
-    beta == '#N/A Invalid Security'
