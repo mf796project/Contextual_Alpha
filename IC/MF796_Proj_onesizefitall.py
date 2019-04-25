@@ -95,7 +95,7 @@ def find_IC(constit,rets,factor):
     for i in range(len(times)-1):
         online=constit.loc[times[i+1],][constit.loc[times[i+1],]!=0]    #for a given time, constituents of SPY
         names=online.index[1:] & factor_col     #constituents having factor data
-                          
+        
         rts=rets.loc[times[i+1],names]
         rts=rts.dropna(axis=0,how="any")
         
@@ -104,18 +104,24 @@ def find_IC(constit,rets,factor):
         
         names=names & rts.index & facs.index
         
-        rts=rts[names]
-        facs=facs[names]
+        if len(names) <= 4:
+            IC.append(None)
+            
+        else:
+        
+            rts=rts[names]
+            facs=facs[names]
         
         
-        rts=rts.fillna(0)
-        facs=facs.fillna(0)
+            rts=rts.fillna(0)
+            facs=facs.fillna(0)
         
-        IC.append(np.corrcoef(list(rts),list(facs))[0,1])
+            IC.append(np.corrcoef(list(rts),list(facs))[0,1])
         
     ICdf=pd.DataFrame(data=IC,index=times[1:])
     
     return ICdf
+    
     
 
 pe=pd.read_csv("S&P500_PE_RATIO.csv")
@@ -126,7 +132,7 @@ find_IC(constit,rets,pe)
     
     
     
-    
+excess.to_csv("excess_return.csv")
     
 
 #spy_mom=pd.read_csv("S&P500_REL_SHR_PX_MOMENTUM.csv")
