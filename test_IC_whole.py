@@ -1,4 +1,4 @@
-from ult_data import res_path, get_matdata
+from ult import res_path, get_matdata
 import numpy as np
 import pandas as pd
 
