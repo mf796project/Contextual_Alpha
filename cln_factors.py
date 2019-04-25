@@ -26,6 +26,8 @@ for factor_path in factor_paths:
     df = df.loc[:,~df.columns.duplicated()]
     df = df.reindex(sorted(df.columns), axis=1)
     df = df.reset_index().rename(columns={'index':'Date'})
+
+    df.iloc[0,:] = df.iloc[0,:].apply(lambda x: x if x != '#N/A Invalid Security' else np.nan)
     df.to_csv('_'.join(['S&P500', file_name+'.csv']), index=False)
 
 # write naming_dict to json
