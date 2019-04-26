@@ -46,24 +46,6 @@ def find_IC(factor, ret, cont_list, limit=4):
 
     return ICdf
 
-if __name__ == '__main__':
     
-    # Whole Universe
-    ret = get_matdata("EXRET")
-    ret = ret.asfreq("M",method="ffill")
-
-    constit = get_matdata("constituents") 
-    constit = constit.asfreq("M",method="ffill")
-
-    eps = get_matdata("5Y_GEO_GROWTH_DILUTED_EPS")
-    eps = eps.asfreq("M",method="ffill")
-
-    factor = find_IC(eps, ret, [constit])
-
-    # Contextual
-    beta = get_matdata('beta_1_2') # low beta
-
-    factor = find_IC(eps, ret, [constit, beta])
-
 
 

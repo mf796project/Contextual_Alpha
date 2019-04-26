@@ -8,8 +8,11 @@ matdata_path = os.path.join(path, 'mat_data')
 res_path = os.path.join(path, 'result')
 cont_path = os.path.join(path, 'context_data')
 
-def get_matdata(file_name):
-    ''' read data from matdata_path or cont_path'''
+def get_matdata(file_name, freq=None):
+    ''' 
+        read data from matdata_path or cont_path,
+        adjust freq by asfreq(freq, method="ffill")
+    '''
     try:
         df = pd.read_csv(os.path.join(matdata_path, '_'.join(['S&P500', file_name+'.csv'])))
     except FileNotFoundError:
@@ -17,9 +20,14 @@ def get_matdata(file_name):
 
     try:
         df['Date'] = pd.to_datetime(df['Date'])
-        return df.set_index('Date')
+        df = df.set_index('Date')
     except:
-        return df.set_index(df.columns[0])
+        df = df.set_index(df.columns[0])
+    
+    if freq == None:
+        return df
+    else:
+        return df.asfreq(freq, method="ffill")
 
 def to_context(matdata, n):
     '''transform matdata to n contexts'''
