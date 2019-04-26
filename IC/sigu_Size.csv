@@ -1,2 +1,3 @@
 ,eps/size,sps/size,prof_mar/size,roic/size,ninc/size,cfo/size,cf/size,sg/size,mom/size,pe/size,pb/size
-L_H,0,0,0,1,0,1,0,1,0,1,1
+L,0,0,0,1,0,1,0,0,0,0,1
+H,0,1,0,0,0,0,0,0,0,1,0

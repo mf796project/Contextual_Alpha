@@ -1,2 +1,3 @@
 ,eps/pe,sps/pe,prof_mar/pe,roic/pe,ninc/pe,cfo/pe,cf/pe,sg/pe,mom/pe,cfni/pe,art/pe,goodwill/pe,leve/pe,quick/pe,a_turn/pe,eps/pb,sps/pb,prof_mar/pb,roic/pb,ninc/pb,cfo/pb,cf/pb,sg/pb,mom/pb,cfni/pb,art/pb,goodwill/pb,leve/pb,quick/pb,a_turn/pb
-L_H,0,1,0,1,0,0,0,0,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0
+L,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1
+H,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0
