@@ -1,0 +1,17 @@
+﻿beta,unsys,size,pe,pb,eps,sps,prof_mar,roic,ninc,cfo,cf,sg
+eps,pe,pe,eps,eps,pe,pe,pe,pe,pe,pe,pe,pe
+sps,pb,pb,sps,sps,pb,pb,pb,pb,pb,pb,pb,pb
+prof_mar,eps,eps,prof_mar,prof_mar,cfni,cfni,cfni,cfni,cfni,cfni,cfni,cfni
+roic,sps,sps,roic,roic,leve,leve,leve,leve,leve,leve,leve,leve
+ninc,prof_mar,prof_mar,ninc,ninc,art,art,art,art,art,art,art,art
+cfo,roic,roic,cfo,cfo,quick,quick,quick,quick,quick,quick,quick,quick
+cfo,ninc,ninc,cf,cf,a_turn,a_turn,a_turn,a_turn,a_turn,a_turn,a_turn,a_turn
+sg,cfo,cfo,sg,sg,mom,mom,mom,mom,mom,mom,mom,mom
+cfni,cfo,cfo,cfni,cfni,,,,,,,,
+leve,sg,sg,leve,leve,,,,,,,,
+art,cfni,cfni,art,art,,,,,,,,
+quick,leve,leve,quick,quick,,,,,,,,
+a_turn,art,art,a_turn,a_turn,,,,,,,,
+mom,quick,quick,mom,mom,,,,,,,,
+,a_turn,a_turn,,,,,,,,,,
+,mom,mom,,,,,,,,,,
