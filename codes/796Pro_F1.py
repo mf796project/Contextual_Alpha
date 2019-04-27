@@ -13,7 +13,7 @@ from tabulate import tabulate
 #deal with single risk factor per time
 
 class constr_port():
-    def __init__(self,rets,riskFactors,alphaFactors,nStocks = 15,test = 30,IC = None,signiLevel = 0.05):
+    def __init__(self,rets,riskFactors,alphaFactors,nStocks = 15,signiLevel = 0.05):
         #stocks = stock prices  formed as T+1*K
         #riskFactors: raw factor data, formed as T*K(tickers), dataframe
         #alphaFactors: raw factor data, formed as dict
@@ -27,7 +27,6 @@ class constr_port():
         self.tickers = self.rets.columns.values
         self.alphas =  pd.Series(list(alphaFactors.keys()))
         self.K = self.rets.shape[1]#number of stocks
-        self.test = test
         self.nStocks = nStocks
 
         
@@ -85,7 +84,6 @@ class constr_port():
         return highIC
     
     def get_total_IC(self,ics = None):
-        self.get_partitionIndex()
         
 #        if given is None:
 #            highIC = pd.DataFrame()
@@ -120,8 +118,8 @@ class constr_port():
         self.F = highVol / lowVol
         df1 = self.T - 1
         df2 = self.T - 1
-        self.p_f = stats.f.sf(F, df1, df2)
-        self.t,self.p_t = stats.ttest_ind(self.highIC,self.lowIC,equal_var = [p_f > 0.05],nan_policy = 'omit')
+        self.p_f = stats.f.sf(self.F, df1, df2)
+        self.t,self.p_t = stats.ttest_ind(self.highIC,self.lowIC,equal_var = [self.p_f > 0.05],nan_policy = 'omit')
         self.alphaIndex = np.where(self.p_t<self.signiLevel)
         #f test for variance
 
@@ -150,9 +148,9 @@ class constr_port():
         
         self.weightsLow = weightsLow/np.sum(weightsLow) #weighting alphas np.array
         
-    def constr_alphaAssets(self):
+    def constr_alphaAssets(obj):
         
-        n = self.nStocks
+        n = obj.nStocks
         
         alphaAssetHigh = pd.DataFrame(dtype = float)
         alphaAssetLow = pd.DataFrame(dtype = float)
@@ -161,46 +159,54 @@ class constr_port():
         alphaLowBuy = pd.DataFrame(dtype = float)
         alphaLowSell = pd.DataFrame(dtype = float)
         
-        for key in self.surAlpha.values:
+        for key in obj.surAlpha.values:
             
-            for t,t1 in zip(self.date[:-1],self.date[1:]):
+            for t,t1 in zip(obj.date[:-1],obj.date[1:]):
                 #high                
-                aFHigh = self.alphaFactors[key][self.highIndex.loc[t]].loc[t]
+                aFHigh = obj.alphaFactors[key][obj.highIndex.loc[t]].loc[t]
                 sortedIndex = np.argsort(aFHigh)
                 sortedIndex = sortedIndex.replace(-1,np.NaN)
                 x1 = sortedIndex[sortedIndex < n].index.values #low
-                x2 = sortedIndex[sortedIndex >  np.nanmax(sortedIndex)-n].index.values #high
-                r1 = self.rets[x1].loc[t1]
-                r2 = self.rets[x2].loc[t1]
+                with np.warnings.catch_warnings():
+                    np.warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
+                    x2 = sortedIndex[sortedIndex >  np.nanmax(sortedIndex)-n].index.values #high
+                r1 = obj.rets[x1].loc[t1]
+                r2 = obj.rets[x2].loc[t1]
                 r = r2.mean()-r1.mean()
                 alphaAssetHigh.at[t1,key] = r
                 #low
-                aFLow = self.alphaFactors[key][self.lowIndex.loc[t]].loc[t]
+                aFLow = obj.alphaFactors[key][obj.lowIndex.loc[t]].loc[t]
                 sortedIndex = np.argsort(aFLow)
                 sortedIndex = sortedIndex.replace(-1,np.NaN)
-                x1 = sortedIndex[sortedIndex < n].index.values #low
-                x2 = sortedIndex[sortedIndex >=  np.nanmax(sortedIndex)-n].index.values #high
-                r1 = self.rets[x1].loc[t1]
-                r2 = self.rets[x2].loc[t1]
+                with np.warnings.catch_warnings():
+                    np.warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
+                    x1 = sortedIndex[sortedIndex < n].index.values #low
+                    x2 = sortedIndex[sortedIndex >=  np.nanmax(sortedIndex)-n].index.values #high
+                r1 = obj.rets[x1].loc[t1]
+                r2 = obj.rets[x2].loc[t1]
                 r = r2.mean()-r1.mean()
                 alphaAssetLow.at[t1,key] = r
              
-            t = self.date.iloc[-1]
-            aFHigh = self.alphaFactors[key][self.highIndex.loc[t]].loc[t]
+            t = obj.date.iloc[-1]
+            aFHigh = obj.alphaFactors[key][obj.highIndex.loc[t]].loc[t]
             sortedIndex = np.argsort(aFHigh)
             sortedIndex = sortedIndex.replace(-1,np.NaN)
             alphaHighSell[key] =  sortedIndex[sortedIndex < n].index.values #low
             alphaHighBuy[key] = sortedIndex[sortedIndex >  np.nanmax(sortedIndex)-n].index.values #high
 
-            aFLow = self.alphaFactors[key][self.lowIndex.loc[t]].loc[t]
+            aFLow = obj.alphaFactors[key][obj.lowIndex.loc[t]].loc[t]
             sortedIndex = np.argsort(aFLow)
             sortedIndex = sortedIndex.replace(-1,np.NaN)
-            alphaLowSell[key] = pd.Series(-1/n*np.ones(n),index = sortedIndex[sortedIndex < n].index.values) #low
-            alphaLowBuy[key] = pd.Series(1/n*np.ones(n),index = sortedIndex[sortedIndex >  np.nanmax(sortedIndex)-n].index.values)  #high
+            alphaLowSell[key] =sortedIndex[sortedIndex < n].index.values #low
+            alphaLowBuy[key] = sortedIndex[sortedIndex >  np.nanmax(sortedIndex)-n].index.values #high
                             
-                
-        self.alphaAssetHigh = alphaAssetHigh        
-        self.alphaAssetLow  = alphaAssetLow 
+        obj.alphaHighSell = alphaHighSell
+        obj.alphaHighBuy = alphaHighBuy
+        obj.alphaLowBuy = alphaLowBuy
+        obj.alphaLowSell = alphaLowSell
+        
+        obj.alphaAssetHigh = alphaAssetHigh        
+        obj.alphaAssetLow  = alphaAssetLow 
         
     def constr_riskAsset(self):#weights = [high,low]
         
@@ -215,9 +221,9 @@ class constr_port():
         w1 = 1/self.nStocks*np.ones([self.nStocks,self.nAlpha])
         #combine risk factot
         w1_high = self.weightRisk.iloc[0,:].values *w1*self.weightsHigh
-        self.w1_high = pd.DataFrame(w1_high,columns = self.surAlpha)
+        self.w1_high = pd.DataFrame(w1_high,columns = self.surAlpha) #weights for stocks in high risk context
         w1_low = self.weightRisk.iloc[1,:].values *w1 *self.weightsLow
-        self.w1_low = pd.DataFrame(w1_low,columns = self.surAlpha) 
+        self.w1_low = pd.DataFrame(w1_low,columns = self.surAlpha) #weights for stocks in low risk context
         
         #risk asset historical based on today's optimization
         
@@ -242,24 +248,45 @@ def constr_crPort(riskAssets): #construct cross risk factor port
     Sigma = riskAssets.cov()
     weights = np.dot(np.linalg.inv(Sigma), riskAssets.mean().T)
     return weights/weights.sum()
-#
-#def constr_rollingPort(n):
-#    weightsForRisk = constr_crPort(riskAsset)
-#    out_of_sample = rets[-n:,:]
-#    profit = np.zeros(n)
-#           
-#    for i in range(n):
-#        rets = rets[T-50+n,:]
-#        riskFactors = riskFactors[T-50+n,:]
-#        for keys in alphaFactors:
-#            alphaFactors[keys] = alphaFactors[keys].iloc[T-50+n,:]
-#        T = len(rets.index.values)
-#        constr_riskPort()
-#        ret = out_of_sample[n,:]
-#        rets = portStocks.apply(lambda x:ret[x])
-#        profit[n] = np.sum(rets*portWeights)        
-#    profit = profit
-            
+    
+
+def constr_rollingPort(ret,riskFactor,Factors,cc,n = 30):
+    T = ret.shape[0]
+#    
+
+    profit = np.zeros(n)
+    aI = {}
+    for i in range(n):
+        print(i+1)
+        r= ret.iloc[T-50+i]
+        index = ret.index.values[:T-50+i]
+        
+        riskAsset = pd.DataFrame(dtype = float)
+        rSingleRisk = []
+        for keys,values in riskFactor.items():
+             print(keys)
+             riskFactors = Factors[keys].loc[index]
+             alphaFactors = {key: value.loc[index] for key, value in Factors.items() if key in values}
+             ics = cc[keys].loc[:index[-1]]
+             obj = constr_port(ret.loc[index],riskFactors,alphaFactors)
+             obj.ide_alpha(ics)             
+             if obj.ifkeep != False:
+                obj.get_partitionIndex()
+                obj.constr_alphaAssets()
+                obj.weighting_scheme()
+                aI[(i,keys)] = obj.surAlpha
+                riskAsset[keys] = obj.constr_riskAsset()
+                rAlphaHigh = (obj.alphaHighBuy.apply(lambda x:r.loc[x].reset_index(drop=True)) - obj.alphaHighSell.apply(lambda x:r.loc[x].reset_index(drop=True)))*obj.w1_high
+                rAlphaLow = (obj.alphaLowBuy.apply(lambda x:r.loc[x].reset_index(drop=True)) - obj.alphaLowSell.apply(lambda x:r.loc[x].reset_index(drop=True)))*obj.w1_low
+                r_port = (rAlphaHigh.sum()*obj.weightRisk.iloc[0,:].values).sum() +  (rAlphaLow.sum()*obj.weightRisk.iloc[1,:].values).sum()
+                rSingleRisk.append(r_port)
+                
+        weightsForRisk = constr_crPort(riskAsset)
+        r_total = (np.array(rSingleRisk)*weightsForRisk).sum()
+        profit[i] = r_total       
+    return profit
+                
+   
 
     
 #    
@@ -268,7 +295,7 @@ if __name__=='main':
     
 #    pool = pd.read_csv('pools.csv',index_col = False).Pool    
 
-
+#
 #    stocks1 = pd.read_csv(r'C:\Users\mdejg\Documents\GitHub\Contextual_Alpha\mat_data\S&P500_clsprc.csv',index_col=0)
 #    stocks = stocks1[pool].loc[dates]
 #    rets = np.log(stocks/stocks.shift(1)).dropna(how='all')
@@ -318,29 +345,29 @@ if __name__=='main':
 #          a.index = index.values
 #          cc[k] = a
     
-    objs = {}
-    aI = {}
-    riskAsset = pd.DataFrame(dtype = float)
-     #apply strategy for each risk factor
-    for keys,values in riskFactor.items():
-         print(keys)
-         riskFactors = Factors[keys]
-         alphaFactors = {key: value for key, value in Factors.items() if key in values}
-         ics = cc[keys]
-         obj = constr_port(rets,riskFactors,alphaFactors)
-         obj.ide_alpha(ics)
-         if obj.ifkeep != False:
-            obj.get_partitionIndex()
-            obj.constr_alphaAssets()
-            objs[keys] = obj
-            aI[keys] = obj.surAlpha
-            obj.weighting_scheme()
-            riskAsset[keys] = obj.constr_riskAsset()
+#    objs = {}
+#    aI = {}
+#    riskAsset = pd.DataFrame(dtype = float)
+#     #apply strategy for each risk factor
+#    for keys,values in riskFactor.items():
+#         print(keys)
+#         riskFactors = Factors[keys]
+#         alphaFactors = {key: value for key, value in Factors.items() if key in values}
+#         ics = cc[keys]
+#         obj = constr_port(rets,riskFactors,alphaFactors)
+#         obj.ide_alpha(ics)
+#         if obj.ifkeep != False:
+#            obj.get_partitionIndex()
+#            obj.constr_alphaAssets()
+#            objs[keys] = obj
+#            aI[keys] = obj.surAlpha
+#            obj.weighting_scheme()
+#            riskAsset[keys] = obj.constr_riskAsset()
             
-    
+#construct rolling port  
             
-            
-         
+     rets = np.log(stocks/stocks.shift(1)).dropna(how='all')
+     p = constr_rollingPort(rets,riskFactor,Factors,cc)
          
          
          
