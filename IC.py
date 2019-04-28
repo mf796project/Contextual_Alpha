@@ -2,7 +2,7 @@ from ult import res_path, get_matdata
 import numpy as np
 import pandas as pd
 
-def find_IC(factor, ret, cont_list, limit=4):
+def find_IC(factor, ret, cont_list, limit=2):
     ''' 
         A function with input: 
             ret (returns of constituents), 
@@ -19,6 +19,9 @@ def find_IC(factor, ret, cont_list, limit=4):
     IC = []
     for i in range(len(times)-1):
         # only use tickers in context
+        # print(i)
+        # if i == 314:
+        #     x = 1
         for j in range(len(cont_list)):
             cont = cont_list[j]
             if j == 0:
@@ -28,19 +31,21 @@ def find_IC(factor, ret, cont_list, limit=4):
                     cont.loc[times[i+1],][cont.loc[times[i+1],]!=0]
         
         # only use tickers with available return data
-        rts = ret.loc[times[i+1],].dropna()
+        rts = ret.loc[times[i+1],].replace([np.inf, -np.inf], np.nan).dropna()
         
         # only use tickers with available factor data
-        facs = factor.loc[times[i],].dropna()
+        facs = factor.loc[times[i],].replace([np.inf, -np.inf], np.nan).dropna()
 
         names = online.index & rts.index & facs.index
             
         if len(names) <= limit:
-            IC.append(None)   
+            IC.append(None)
         else:
             rts=rts[names]
             facs=facs[names]
-            IC.append(np.corrcoef(list(rts),list(facs))[0,1])
+            corr = np.corrcoef(list(rts),list(facs))[0,1]
+            IC.append(corr)
+            # print(corr)
     
     ICdf = pd.DataFrame(data=IC,index=times[1:],columns=['factor'])
 
