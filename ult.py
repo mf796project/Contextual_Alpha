@@ -100,7 +100,7 @@ def portfolio_ret(rets, weights, start_date, end_date):
         month_ret = (rets.iloc[i+1,:] * weights.iloc[i,]).sum()
         ret_list.append(month_ret)
     cum_ret = np.cumsum(ret_list)
-
-    return cum_ret
+    
+    return pd.DataFrame(data=cum_ret, index=times[1:])
 
 
