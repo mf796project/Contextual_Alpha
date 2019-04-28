@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Apr 14 16:01:20 2019
-
-@author: yumeng cui
-"""
 #split to sub-universe based on contextual cluster
 import numpy as np
 import pandas as pd
 from scipy import stats
 from tabulate import tabulate
+import matplotlib
+matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
+import pickle
 
 #deal with single risk factor per time
 
@@ -236,7 +233,7 @@ class constr_port():
         print('high ic summary')
         print(self.highIC.describe())
         
-    
+
     
 def constr_crPort(riskAssets): #construct cross risk factor port
     Sigma = riskAssets.cov()
@@ -282,14 +279,27 @@ def constr_rollingPort(ret,riskFactor,Factors,cc,n = 30):
         weightsForRisk = constr_crPort(riskAsset)
         r_total = (np.array(rSingleRisk)*weightsForRisk).sum()
         profit[i] = r_total       
+    
     return profit
-                
-   
+
+
+with open('Factors.pickle', 'rb') as f:
+    Factors = pickle.load(f)
+
+with open('rets.pickle', 'rb') as f:
+    rets = pickle.load(f)
+
+with open('cc.pickle', 'rb') as f:
+    cc = pickle.load(f)
+
+with open('riskFactor.pickle', 'rb') as f:
+    riskFactor = pickle.load(f)
+
+
+p = constr_rollingPort(rets,riskFactor,Factors,cc,30)
+
 
     
-#    
-if __name__=='main':
-
     
 #    pool = pd.read_csv('pools.csv',index_col = False).Pool    
 
@@ -364,7 +374,6 @@ if __name__=='main':
             
 #construct rolling port  
             
-     p = constr_rollingPort(rets,riskFactor,Factors,cc,30)
          
          
          
