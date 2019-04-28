@@ -89,4 +89,18 @@ def find_weights(cont):
     '''
     return cont.apply(lambda x: x/ cont.sum(axis=1))
 
+def portfolio_ret(rets, weights, start_date, end_date):
+    times = rets.index & weights.index
+    times = times[(times >= start_date) & (times <= end_date)]
+    rets = rets.loc[times,]
+    weights = weights.loc[times,]
+
+    ret_list = []
+    for i in range(len(rets)-1):
+        month_ret = (rets.iloc[i+1,:] * weights.iloc[i,]).sum()
+        ret_list.append(month_ret)
+    cum_ret = np.cumsum(ret_list)
+
+    return cum_ret
+
 

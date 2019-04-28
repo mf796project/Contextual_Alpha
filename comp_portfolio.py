@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from ult import get_matdata, cont_by_cont, find_weights
+from ult import get_matdata, cont_by_cont, find_weights, portfolio_ret
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
@@ -23,25 +23,12 @@ high_size_high_mom_weights = find_weights(high_size_mom_conts[1])
 start_date = pd.to_datetime('1990/01/01')
 end_date = pd.to_datetime('2018/12/31')
 
-def portfolio_nv(rets, weights, start_date, end_date):
-    times = rets.index & weights.index
-    times = times[(times >= start_date) & (times <= end_date)]
-    rets.loc[times,]
-    weights.loc[times,]
+p1 = portfolio_ret(rets, low_size_low_mom_weights, start_date, end_date)
+p2 = portfolio_ret(rets, low_size_high_mom_weights, start_date, end_date)
+p3 = portfolio_ret(rets, high_size_low_mom_weights, start_date, end_date)
+p4 = portfolio_ret(rets, high_size_high_mom_weights, start_date, end_date)
 
-    ret_list = []
-    for i in range(len(rets)-1):
-        month_ret = (rets.iloc[i+1,:] * weights.iloc[i,]).sum()
-        ret_list.append(month_ret)
-    cum_ret = np.cumsum(ret_list)
+p = np.exp(p2 - p1 - p4 + p3)
 
-    return cum_ret
-
-p1 = portfolio_nv(rets, low_size_low_mom_weights, start_date, end_date)
-p2 = portfolio_nv(rets, low_size_high_mom_weights, start_date, end_date)
-p3 = portfolio_nv(rets, high_size_low_mom_weights, start_date, end_date)
-p4 = portfolio_nv(rets, high_size_high_mom_weights, start_date, end_date)
-
-p = p2 - p1 - p4 + p3
 plt.plot(p)
 plt.show()
