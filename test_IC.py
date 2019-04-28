@@ -15,11 +15,11 @@ Combined_Value = get_matdata('Combined_Value' ,'M')
 Momentum = get_matdata('REL_SHR_PX_MOMENTUM' ,'M')
 Cap = get_matdata('CUR_MKT_CAP' ,'M')
 
-size_low = get_matdata('size_1_2', 'M')
-size_high = get_matdata('size_2_2', 'M')
+size_low = get_matdata('size_1_3', 'M')
+size_high = get_matdata('size_3_3', 'M')
 
-value_low = get_matdata('value_pe_1_2', 'M')
-value_high = get_matdata('value_pe_2_2', 'M')
+value_low = get_matdata('value_pe_1_3', 'M')
+value_high = get_matdata('value_pe_3_3', 'M')
 
 # Context: Size
 growth_lowsize = find_IC(Combined_Growth, ret, [constit, size_low])
