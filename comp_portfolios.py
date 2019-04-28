@@ -1,29 +1,10 @@
 import os
 import numpy as np
 import pandas as pd
-from ult import res_path, get_matdata, cont_by_cont, find_weights, portfolio_ret
+from ult import res_path, get_matdata, cont_by_cont, find_weights, portfolio_rets_turn
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
-
-def portfolio_rets(rets, cont_list, factor, start_date, end_date):
-    
-    low_cont_fac_conts = cont_by_cont(cont_list[0], factor, threhold=0.1)
-    low_cont_low_fac_weights = find_weights(low_cont_fac_conts[0])
-    low_cont_high_fac_weights = find_weights(low_cont_fac_conts[1])
-
-    high_cont_fac_conts = cont_by_cont(cont_list[1], factor, threhold=0.1)
-    high_cont_low_fac_weights = find_weights(high_cont_fac_conts[0])
-    high_cont_high_fac_weights = find_weights(high_cont_fac_conts[1])
-
-    p1 = portfolio_ret(rets, low_cont_low_fac_weights, start_date, end_date)
-    p2 = portfolio_ret(rets, low_cont_high_fac_weights, start_date, end_date)
-    p3 = portfolio_ret(rets, high_cont_low_fac_weights, start_date, end_date)
-    p4 = portfolio_ret(rets, high_cont_high_fac_weights, start_date, end_date)
-
-    p = p2 - p1 - p4 + p3
-
-    return p
 
 # return data
 rets = get_matdata('ret', 'M')
@@ -47,15 +28,18 @@ start_date = pd.to_datetime('1990/01/01')
 end_date = pd.to_datetime('2018/12/31')
 
 # loop
-nv1 = portfolio_rets(rets, [lowsize, highsize], Combined_Growth, start_date, end_date)
-nv2 = portfolio_rets(rets, [lowsize, highsize], Combined_Quality, start_date, end_date)
-nv3 = portfolio_rets(rets, [lowsize, highsize], Combined_Value, start_date, end_date)
-nv4 = portfolio_rets(rets, [lowsize, highsize], Momentum, start_date, end_date)
+nv1, turn1 = portfolio_rets_turn(rets, [lowsize, highsize], Combined_Growth, start_date, end_date)
+nv2, turn2 = portfolio_rets_turn(rets, [lowsize, highsize], Combined_Quality, start_date, end_date)
+nv3, turn3 = portfolio_rets_turn(rets, [lowsize, highsize], Combined_Value, start_date, end_date)
+nv4, turn4 = portfolio_rets_turn(rets, [lowsize, highsize], Momentum, start_date, end_date)
 
-nv5 = portfolio_rets(rets, [lowvalue, highvalue], Combined_Growth, start_date, end_date)
-nv6 = portfolio_rets(rets, [lowvalue, highvalue], Combined_Quality, start_date, end_date)
-nv7 = portfolio_rets(rets, [lowvalue, highvalue], Cap, start_date, end_date)
-nv8 = portfolio_rets(rets, [lowvalue, highvalue], Momentum, start_date, end_date)
+nv5, turn5 = portfolio_rets_turn(rets, [lowvalue, highvalue], Combined_Growth, start_date, end_date)
+nv6, turn6 = portfolio_rets_turn(rets, [lowvalue, highvalue], Combined_Quality, start_date, end_date)
+nv7, turn7  = portfolio_rets_turn(rets, [lowvalue, highvalue], Combined_Value, start_date, end_date)
+nv8, turn8 = portfolio_rets_turn(rets, [lowvalue, highvalue], Momentum, start_date, end_date)
 
-df = pd.concat([nv1, nv2, nv3, nv4, nv5, nv6, nv7, nv8], axis=1)
-df.to_csv(os.path.join(res_path, 'nvs.csv'))
+nvs = pd.concat([nv1, nv2, nv3, nv4, nv5, nv6, nv7, nv8], axis=1)
+nvs.to_csv(os.path.join(res_path, 'nvs.csv'))
+
+turns = pd.concat([turn1, turn2, turn3, turn4, turn5, turn6, turn7, turn8], axis=1)
+turns.to_csv(os.path.join(res_path, 'turns.csv'))

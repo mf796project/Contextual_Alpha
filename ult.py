@@ -103,4 +103,27 @@ def portfolio_ret(rets, weights, start_date, end_date):
     
     return pd.DataFrame(data=cum_ret, index=times[1:])
 
+def portfolio_rets_turn(rets, cont_list, factor, start_date, end_date):
+    
+    low_cont_fac_conts = cont_by_cont(cont_list[0], factor, threhold=0.1)
+    low_cont_low_fac_weights = find_weights(low_cont_fac_conts[0])
+    low_cont_high_fac_weights = find_weights(low_cont_fac_conts[1])
+
+    high_cont_fac_conts = cont_by_cont(cont_list[1], factor, threhold=0.1)
+    high_cont_low_fac_weights = find_weights(high_cont_fac_conts[0])
+    high_cont_high_fac_weights = find_weights(high_cont_fac_conts[1])
+
+    p1 = portfolio_ret(rets, low_cont_low_fac_weights, start_date, end_date)
+    p2 = portfolio_ret(rets, low_cont_high_fac_weights, start_date, end_date)
+    p3 = portfolio_ret(rets, high_cont_low_fac_weights, start_date, end_date)
+    p4 = portfolio_ret(rets, high_cont_high_fac_weights, start_date, end_date)
+
+    p = p2 - p1 - p4 + p3
+
+    w = low_cont_high_fac_weights - low_cont_low_fac_weights - high_cont_high_fac_weights + high_cont_low_fac_weights
+    delta_w = w.diff().iloc[1:,]
+    turn = delta_w.abs().sum(axis=1)
+
+    return p, turn
+
 
