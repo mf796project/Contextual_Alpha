@@ -4,7 +4,7 @@ import pandas as pd
 from ult import cont_path, get_matdata, to_context
 
 # number of context
-n = 2 
+n = 3
 # naming convention: beta_1_2(low beta), beta_2_2(high beta)
 
 # beta

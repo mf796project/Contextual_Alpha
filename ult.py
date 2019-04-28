@@ -97,7 +97,8 @@ def portfolio_ret(rets, weights, start_date, end_date):
 
     ret_list = []
     for i in range(len(rets)-1):
-        month_ret = (rets.iloc[i+1,:] * weights.iloc[i,]).sum()
+        adj_ret = (rets.iloc[i+1,:] * weights.iloc[i,]).replace([np.inf, -np.inf], 0)
+        month_ret = adj_ret.sum()
         ret_list.append(month_ret)
     cum_ret = np.cumsum(ret_list)
     
@@ -127,3 +128,4 @@ def portfolio_rets_turn(rets, cont_list, factor, start_date, end_date):
     return p, turn
 
 
+# p.replace([np.inf, -np.inf], np.nan).isnull().sum()

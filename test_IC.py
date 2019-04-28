@@ -78,3 +78,34 @@ ICs.columns =[
     'mom_lowvalue', 'mom_highvalue',
 ]
 ICs.to_csv(os.path.join(res_path,'ICs.csv'))
+
+t_stats = pd.DataFrame([
+    t_growth_size, t_quality_size,
+    t_value_size, t_mom_size,
+    t_growth_value, t_quality_value,
+    t_size_value, t_mom_value,
+]).transpose()
+t_stats.columns =[
+    'growth_size', 'quality_size',
+    'value_size', 'mom_size',
+    'growth_value', 'quality_value',
+    'size_value', 'mom_value', 
+]
+t_stats.index=['t-stat']
+
+p_value = pd.DataFrame([
+    p_growth_size, p_quality_size,
+    p_value_size, p_mom_size,
+    p_growth_value, p_quality_value,
+    p_size_value, p_mom_value,
+]).transpose()
+p_value.columns =[
+    'growth_size', 'quality_size',
+    'value_size', 'mom_size',
+    'growth_value', 'quality_value',
+    'size_value', 'mom_value', 
+]
+p_value.index=['p-value']
+
+stats = pd.concat([t_stats, p_value])
+stats.to_csv(os.path.join(res_path, 'stats.csv'))

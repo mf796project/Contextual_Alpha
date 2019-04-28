@@ -10,11 +10,11 @@ import matplotlib.pyplot as plt
 rets = get_matdata('ret', 'M')
 
 # context data
-lowsize = get_matdata('size_1_2', 'M')
-highsize = get_matdata('size_2_2', 'M')
+lowsize = get_matdata('size_1_3', 'M')
+highsize = get_matdata('size_3_3', 'M')
 
-lowvalue = get_matdata('value_pe_1_2', 'M')
-highvalue = get_matdata('value_pe_2_2', 'M')
+lowvalue = get_matdata('value_pe_1_3', 'M')
+highvalue = get_matdata('value_pe_3_3', 'M')
 
 # factor data
 Combined_Growth = get_matdata('Combined_Growth' ,'M')
@@ -35,7 +35,7 @@ nv4, turn4 = portfolio_rets_turn(rets, [lowsize, highsize], Momentum, start_date
 
 nv5, turn5 = portfolio_rets_turn(rets, [lowvalue, highvalue], Combined_Growth, start_date, end_date)
 nv6, turn6 = portfolio_rets_turn(rets, [lowvalue, highvalue], Combined_Quality, start_date, end_date)
-nv7, turn7  = portfolio_rets_turn(rets, [lowvalue, highvalue], Combined_Value, start_date, end_date)
+nv7, turn7 = portfolio_rets_turn(rets, [lowvalue, highvalue], Combined_Value, start_date, end_date)
 nv8, turn8 = portfolio_rets_turn(rets, [lowvalue, highvalue], Momentum, start_date, end_date)
 
 nvs = pd.concat([nv1, nv2, nv3, nv4, nv5, nv6, nv7, nv8], axis=1)
