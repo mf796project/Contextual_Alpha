@@ -19,9 +19,6 @@ def find_IC(factor, ret, cont_list, limit=2):
     IC = []
     for i in range(len(times)-1):
         # only use tickers in context
-        # print(i)
-        # if i == 314:
-        #     x = 1
         for j in range(len(cont_list)):
             cont = cont_list[j]
             if j == 0:
@@ -45,7 +42,6 @@ def find_IC(factor, ret, cont_list, limit=2):
             facs=facs[names]
             corr = np.corrcoef(list(rts),list(facs))[0,1]
             IC.append(corr)
-            # print(corr)
     
     ICdf = pd.DataFrame(data=IC,index=times[1:],columns=['factor'])
 

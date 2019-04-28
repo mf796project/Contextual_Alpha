@@ -9,6 +9,8 @@ constit = get_matdata('constituents', 'M')
 
 rets = np.log(price / price.shift(1))
 rets = rets.iloc[1:,] 
+rets.to_csv(os.path.join(matdata_path, "S&P500_ret.csv"))
+
 
 mret = np.log(spx / spx.shift(1))
 mret = mret.iloc[1:,]
