@@ -1,0 +1,24 @@
+2010,Capital Goods,Consumer
+2020,Commercial & Professional Services,Consumer
+2510,Automobiles & Components,Consumer
+2520,Consumer Durables & Apparel,Consumer
+2530,Consumer Services,Consumer
+2550,Retailing,Consumer
+3010,Food & Staples Retailing,Consumer
+3020,"Food, Beverage & Tobacco",Consumer
+3030,Household & Personal Products,Consumer
+3510,Health Care Equipment & Services,Consumer
+3520,"Pharmaceuticals, Biotechnology & Life Sciences",Consumer
+5020,Media & Entertainment,Consumer
+4010,Banks,Finance
+4020,Diversified Financials,Finance
+4030,Insurance,Finance
+1010,Energy,Others
+1510,Materials,Others
+2030,Transportation,Others
+5510,Utilities,Others
+6010,Real Estate,Others
+4510,Software & Services,Technology
+4520,Technology Hardware & Equipment,Technology
+4530,Semiconductors & Semiconductor Equipment,Technology
+5010,Telecommunication Services,Technology

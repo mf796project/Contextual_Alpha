@@ -32,7 +32,7 @@ factor=reserved
 fnames=rnames
 
 
-def Sector_IC (constit,rets,factor,fnames,ind,IC_Whole,alpha):
+def Sector_IC (constit,rets,factor,fnames,ind,new_IC_Whole,alpha):
     gic=cate.iloc[:,0][cate.iloc[:,2]==ind]
     mem=tic["tic"][tic["Gind"].isin(gic)]
     crets=rets[mem]
@@ -49,9 +49,9 @@ def Sector_IC (constit,rets,factor,fnames,ind,IC_Whole,alpha):
         ic=find_IC(new_con,crets,factor[i])
         ic.columns=[fnames[i]]
         IC=IC.join(ic,how="right")
-        
+                
         ic=ic.dropna(axis=0,how="any")
-        p=st.ttest_ind(ic,IC_Whole[fnames[i]].dropna(axis=0,how="any")).pvalue[0]
+        p=st.ttest_ind(ic,new_IC_Whole[fnames[i]].dropna(axis=0,how="any")).pvalue[0]
         if p<alpha:
             p=[p,1]
         else:
@@ -64,10 +64,10 @@ def Sector_IC (constit,rets,factor,fnames,ind,IC_Whole,alpha):
     return IC,tstat
 
 alpha=0.05
-con_IC,con_sig=Sector_IC (constit,rets,factor,fnames,"Consumer",IC_Whole,alpha)
-fin_IC,fin_sig=Sector_IC (constit,rets,factor,fnames,"Finance",IC_Whole,alpha)
-tech_IC,tech_sig=Sector_IC (constit,rets,factor,fnames,"Technology",IC_Whole,alpha)     
-others_IC,others_sig=Sector_IC (constit,rets,factor,fnames,"Others",IC_Whole,alpha)
+con_IC,con_sig=Sector_IC (constit,rets,factor,fnames,"Consumer",new_IC_Whole,alpha)
+fin_IC,fin_sig=Sector_IC (constit,rets,factor,fnames,"Finance",new_IC_Whole,alpha)
+tech_IC,tech_sig=Sector_IC (constit,rets,factor,fnames,"Technology",new_IC_Whole,alpha)     
+others_IC,others_sig=Sector_IC (constit,rets,factor,fnames,"Others",new_IC_Whole,alpha)
         
         
 con_IC.to_csv("Consumer_IC.csv")
@@ -80,8 +80,18 @@ fin_sig.to_csv("Finance_sig.csv")
 tech_sig.to_csv("Technology_sig.csv")
 others_sig.to_csv("Others_sig.csv")
         
-    
-    
+m1=con_IC.mean(axis=0)
+#mean=pd.DataFrame(index=["Consumer","Finance","Technology","Others"])
+mean=pd.DataFrame(m1,columns=["Consumer"])
+m2=pd.DataFrame(fin_IC.mean(axis=0),columns=["Finance"])
+mean=mean.join(m2)
+m3=pd.DataFrame(tech_IC.mean(axis=0),columns=["Technology"])
+mean=mean.join(m3)
+m4=pd.DataFrame(others_IC.mean(axis=0),columns=["Others"])
+mean=mean.join(m4)
+
+mean=mean.T
+
 
 
 

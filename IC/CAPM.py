@@ -19,7 +19,7 @@ rf=pd.read_csv("S&P500_rf.csv")
 rf.index=pd.to_datetime(rf["Date"])
 rf=rf.iloc[:,1:]
 rf=rf.dropna(axis=0,how="all")
-rf=rf.asfreq("D",method="ffill")/251
+rf=rf.asfreq("D",method="ffill")/252
 
 price=pd.read_csv("S&P500_clsprc.csv") #close price for all stocks
 price.index=pd.to_datetime(price['Date']) 
@@ -45,7 +45,7 @@ def CAPM(mret_d,ret_d,rf,win):
     
     beta=pd.DataFrame()
     unsys=pd.DataFrame()
-    index=[19,41]
+    index=[19,41,61]
     
     b=pd.DataFrame(index=ret_d.index,columns=ret_d.columns)
     b=b.fillna(0)
@@ -59,24 +59,27 @@ def CAPM(mret_d,ret_d,rf,win):
         
         for j in range(len(ind.iloc[0,])):
             a=mar.join(r)
-            b.iloc[i,j]=np.cov(a.iloc[:,0]-a.iloc[:,1],ind.iloc[:,j]-a.iloc[:,1])[0,1]/np.var(a.iloc[:,0]-a.iloc[:,1])#lm.coef_[0]
+            b.iloc[i,j]=np.cov(a.iloc[:,0]-a.iloc[:,1],ind.iloc[:,j]-a.iloc[:,1])[0,1]/np.var(a.iloc[:,0]-a.iloc[:,1])
             un.iloc[i,j]=np.var(ind.iloc[:,j]-a.iloc[:,1])-b.iloc[i,j]**2*np.var(a.iloc[:,0]-a.iloc[:,1])
             
-        if time[i].month<time[i+1].month:
+        if time[i].month<time[i+1].month or (time[i].month==12 and time[i].day==31):
             if i==83:
-                for t in range(3):
-                    beta=beta.append(b.loc[time[i]-relativedelta(months=1):time[i+1]].mean(axis=0),ignore_index=True)
-                    unsys=unsys.append(un.loc[time[i]-relativedelta(months=1):time[i+1]].mean(axis=0),ignore_index=True)
+                for t in range(4):
+                    beta=beta.append(b.loc[time[i+1]-relativedelta(months=1):time[i+1]].mean(axis=0),ignore_index=True)
+                    unsys=unsys.append(un.loc[time[i+1]-relativedelta(months=1):time[i+1]].mean(axis=0),ignore_index=True)
                 
                 index.append(i)
             else:
-                beta=beta.append(b.loc[time[i]-relativedelta(months=1):time[i+1]].mean(axis=0),ignore_index=True)
-                unsys=unsys.append(un.loc[time[i]-relativedelta(months=1):time[i+1]].mean(axis=0),ignore_index=True)
+                beta=beta.append(b.loc[time[i+1]-relativedelta(months=1):time[i+1]].mean(axis=0),ignore_index=True)
+                unsys=unsys.append(un.loc[time[i+1]-relativedelta(months=1):time[i+1]].mean(axis=0),ignore_index=True)
                 index.append(i)
     
    
     beta.index=time[index]
     unsys.index=time[index]
+    
+    beta=pd.DataFrame(beta.index,index=beta.index).join(beta)
+    unsys=pd.DataFrame(unsys.index,index=unsys.index).join(unsys)
     
     return beta,unsys     
 
@@ -86,7 +89,6 @@ beta.to_csv("beta.csv")
 unsys.to_csv("unsystemetic risk.csv")
 
 """
-
 time=mret_d.index&ret_d.index
 time=time&rf.index
 ret_d=ret_d.reindex(time) # remain days when both spy and price data exist
@@ -94,24 +96,25 @@ mret_d=mret_d.reindex(time) # remain days when both spy and price data exist
     #start=time[0]+relativedelta(month=win//21+1) # rolling starts from the first day of the forth month
 rf=rf.reindex(time)
 
-ret_d=ret_d.iloc[0:200,0:10]
-mret_d=mret_d.iloc[0:200]
-rf=rf.iloc[0:200]
-time=time[0:200]
+
+ret_d=ret_d.iloc[0:1000,0:10]
+mret_d=mret_d.iloc[0:1000]
+rf=rf.iloc[0:1000]
+time=time[0:1000]
+
 
 beta=pd.DataFrame()
 unsys=pd.DataFrame()
-index=[19,41]
+index=[19,41,61]
 
-b=pd.DataFrame(index=ret_d.index,columns=ret_d.columns)
-b=b.fillna(0)
-    
+b=pd.DataFrame(index=time,columns=ret_d.columns)
+b=b.fillna(1)    
 un=pd.DataFrame(index=ret_d.index,columns=ret_d.columns)
-un=un.fillna(0)
+un=un.fillna(1)
 for i in range(62,len(time)-1):
-    mar=mret_d.loc[time[i]-relativedelta(months=win):time[i+1]]
-    ind=ret_d.loc[time[i]-relativedelta(months=win):time[i+1]]
-    r=rf.loc[time[i]-relativedelta(months=win):time[i+1]]
+    mar=mret_d.loc[time[i]-relativedelta(months=win):time[i]]
+    ind=ret_d.loc[time[i]-relativedelta(months=win):time[i]]
+    r=rf.loc[time[i]-relativedelta(months=win):time[i]]
     
     
     
@@ -123,20 +126,20 @@ for i in range(62,len(time)-1):
         
         
     if time[i].month<time[i+1].month:
-        if i==83:
-            
-            beta=beta.append(b.loc[time[i]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
-            unsys=unsys.append(un.loc[time[i]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
-            beta=beta.append(b.loc[time[i]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
-            unsys=unsys.append(un.loc[time[i]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
-            beta=beta.append(b.loc[time[i]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
-            unsys=unsys.append(un.loc[time[i]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
-            
+        if i==83:            
+            beta=beta.append(b.loc[time[i+1]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
+            unsys=unsys.append(un.loc[time[i+1]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
+            beta=beta.append(b.loc[time[i+1]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
+            unsys=unsys.append(un.loc[time[i+1]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
+            beta=beta.append(b.loc[time[i+1]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
+            unsys=unsys.append(un.loc[time[i+1]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
+            beta=beta.append(b.loc[time[i+1]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
+            unsys=unsys.append(un.loc[time[i+1]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
                              
             index.append(i)
         else:
-            beta=beta.append(b.loc[time[i]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
-            unsys=unsys.append(un.loc[time[i]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
+            beta=beta.append(b.loc[time[i+1]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
+            unsys=unsys.append(un.loc[time[i+1]-relativedelta(months=1):time[i]].mean(axis=0),ignore_index=True)
             index.append(i)
     
    # beta.index=time[index[2:]]
@@ -144,4 +147,5 @@ for i in range(62,len(time)-1):
 beta.index=time[index]
 unsys.index=time[index]
     #if time[i].month<time[i+1].month:
- """   
+beta=pd.DataFrame(beta.index,index=beta.index).join(beta)
+"""
