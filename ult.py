@@ -126,6 +126,3 @@ def portfolio_rets_turn(rets, cont_list, factor, start_date, end_date):
     turn = delta_w.abs().sum(axis=1)
 
     return p, turn
-
-
-# p.replace([np.inf, -np.inf], np.nan).isnull().sum()
